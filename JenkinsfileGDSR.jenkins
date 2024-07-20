@@ -1,0 +1,72 @@
+pipeline{
+    agent any
+    tools
+    {
+        maven "install"
+    }
+    stages{
+        stage("Test"){
+            steps{
+                  sh "mvn test"
+                echo "========Test Stage========"
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "========Testesd successfully========"
+                }
+                failure{
+                    echo "========Tested failed========"
+                }
+            }
+        }
+        stage("Build"){
+            steps{
+                  sh "mvn install"
+                echo "========Test Stage========"
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "========Testesd successfully========"
+                }
+                failure{
+                    echo "========Tested failed========"
+                }
+            }
+        }
+        stage("Deploy"){
+            steps{
+                  deploy adapters: [tomcat9(credentialsId: 'tomcat147', path: '', url: 'http://192.168.20.147:8080/')], contextPath: '/mysignaturebook', war: '**/*.war'
+                echo "========Test Stage========"
+            }
+            post{
+                always{
+                    echo "========always========"
+                }
+                success{
+                    echo "========Testesd successfully========"
+                }
+                failure{
+                    echo "========Tested failed========"
+                }
+            }
+        }
+    }
+    
+    post{
+        always{
+            echo "========always========"
+        }
+        success{
+            echo "========pipeline executed successfully ========"
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}
